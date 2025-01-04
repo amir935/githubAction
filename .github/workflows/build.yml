@@ -70,6 +70,7 @@ jobs:
         ANYPOINT_PASSWORD: ${{ secrets.anypoint_platform_password }}
         ANYPOINT_ORG_ID: ${{ secrets.anypoint_organization_id }}
         ANYPOINT_ENV_ID: ${{ secrets.anypoint_environment_id }}
+        ANYPOINT_APP_NAME: mule-gitactions
       run: |
         artifactName=$(ls target/*.jar | head -1)
         mvn mule:deploy \
@@ -77,5 +78,5 @@ jobs:
           -Danypoint.password=$ANYPOINT_PASSWORD \
           -Dorganization.id=$ANYPOINT_ORG_ID \
           -Denvironment.id=$ANYPOINT_ENV_ID \
-          -Dapplication.name=mule-app \
+          -Dapplication.name=$ANYPOINT_APP_NAME \
           -Dartifact.name=$artifactName
