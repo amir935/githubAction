@@ -75,5 +75,5 @@ jobs:
           artifactName=$(ls *.jar | head -1)
           echo "Deploying artifact: $artifactName"
           mvn deploy -DmuleDeploy \
-            -Danypoint.username="$USERNAME" \
-            -Danypoint.password="$PASSWORD"
+            -Danypoint.username="Amir122323" \
+            -Danypoint.password="Amir122306"
