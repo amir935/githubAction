@@ -43,8 +43,8 @@
         <environment>${environment}</environment>
         <target>${targetName}</target>
         <muleVersion>4.8.1</muleVersion>
-        <username>${anypoint.username}</username>
-        <password>${anypoint.password}</password>
+        <username>Amir122323</username>
+        <password>Amir122306</password>
         <applicationName>${appName}</applicationName>
         <replicas>2</replicas>
         <vCores>0.1</vCores>
