@@ -45,7 +45,7 @@
         <muleVersion>4.8.1</muleVersion>
         <username>Amir122323</username>
         <password>Amir122306</password>
-        <applicationName>${appName}</applicationName>
+        <applicationName>mule-gitactions</applicationName>
         <replicas>2</replicas>
         <vCores>0.1</vCores>
         <deploymentSettings>
