@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 
 		
 
-		<set-payload value='#["Hello Amir"]' doc:name="Set Payload" doc:id="7a0d1849-b593-4b40-a059-cb72c76b41c7" />
+		<set-payload value='#["Hello Amir123"]' doc:name="Set Payload" doc:id="7a0d1849-b593-4b40-a059-cb72c76b41c7" />
 
 	</flow>
 </mule>
