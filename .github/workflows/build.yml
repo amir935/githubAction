@@ -10,11 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Cache Maven Dependencies
       - name: Cache Maven Dependencies
         uses: actions/cache@v3
         with:
@@ -23,49 +21,40 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 3: Set up JDK 1.8
       - name: Set up JDK 1.8
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 8
 
-      # Step 4: Build with Maven
       - name: Build with Maven
         run: mvn clean package -B --file pom.xml
 
-
-      # Step 5: Stamp Artifact File Name with Commit Hash
       - name: Stamp Artifact File Name
         run: |
-         artifactName1=$(find target -name "*.jar" | head -1)
-         if [ -z "$artifactName1" ]; then
-           echo "Error: No .jar file found in target directory."
-           exit 1
-         fi
-         commitHash=$(git rev-parse --short "$GITHUB_SHA")
-         artifactName2=$(echo $artifactName1 | sed "s/.jar/-$commitHash.jar/g")
-         mv "$artifactName1" "$artifactName2"
-         echo "Artifact renamed to $artifactName2"
+          artifactName1=$(find target -name "*.jar" | head -1)
+          if [ -z "$artifactName1" ]; then
+            echo "Error: No .jar file found in target directory."
+            exit 1
+          fi
+          commitHash=$(git rev-parse --short "$GITHUB_SHA")
+          artifactName2=$(echo $artifactName1 | sed "s/.jar/-$commitHash.jar/g")
+          mv "$artifactName1" "$artifactName2"
+          echo "Artifact renamed to $artifactName2"
 
-
-      # Step 6: Upload Artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
           path: target/*.jar
-  
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Cache Maven Dependencies
       - name: Cache Maven Dependencies
         uses: actions/cache@v3
         with:
@@ -74,20 +63,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 3: Download Artifact
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
           name: artifacts
 
-      # Step 4: Deploy to Sandbox
-      - name: Deploy to Sandbox
+      - name: Stop Current Application
         env:
-          USERNAME: "Amir122323"
-          PASSWORD: "Amir122306"
+          ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
+          ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
+        run: |
+          anypoint-cli runtime-mgr cloudhub-application stop my-mule-app --environment sandbox
+
+      - name: Deploy New Application
+        env:
+          ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
+          ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
         run: |
           artifactName=$(ls *.jar | head -1)
           mvn deploy -DmuleDeploy -DskipTests \
             -Dmule.artifact=$artifactName \
-            -Danypoint.username="$USERNAME" \
-            -Danypoint.password="$PASSWORD"
+            -Danypoint.username="$ANYPOINT_USERNAME" \
+            -Danypoint.password="$ANYPOINT_PASSWORD"
