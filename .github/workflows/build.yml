@@ -31,7 +31,10 @@ jobs:
       - name: Deploy to CloudHub
         run: |
           echo "Deploying to CloudHub..."
-          mvn deploy -DmuleDeploy \
-            -Danypoint.username="Amir122323" \
-            -Danypoint.password="Amir122306"
+           mvn deploy -DmuleDeploy -DskipTests \
+               -Danypoint.username="Amir122323" \
+               -Danypoint.password="Amir122306" \
+               -Danypoint.orgId="773ec503-c40f-4bb7-b891-34e11e40c432" \
+               -Danypoint.envId="f5f5d0be-37e5-4b2c-ac52-e1a46c5b45ee"
+
           echo "Deployment complete!"
