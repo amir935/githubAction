@@ -11,8 +11,6 @@
   <packaging>mule-application</packaging>
   <name>mule-gitactions</name>
 
-
-         
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -118,8 +116,7 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-<<<<<<< HEAD
+
 </project>
-=======
-</project>
->>>>>>> 70b78b223d70d3224a5263ef393a68241447ab85
+
+
