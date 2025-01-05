@@ -70,15 +70,15 @@ jobs:
 
       - name: Stop Current Application
         env:
-          ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
-          ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
+          ANYPOINT_USERNAME: "Amir122323"
+          ANYPOINT_PASSWORD:  "Amir122306"
         run: |
           anypoint-cli runtime-mgr cloudhub-application stop my-mule-app --environment sandbox
 
       - name: Deploy New Application
         env:
-          ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
-          ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
+          ANYPOINT_USERNAME: "Amir122323"
+          ANYPOINT_PASSWORD:  "Amir122306"
         run: |
           artifactName=$(ls *.jar | head -1)
           mvn deploy -DmuleDeploy -DskipTests \
