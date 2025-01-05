@@ -1,67 +1,96 @@
-
 name: Build and Deploy to Sandbox
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
-    
+    branches: [master]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout this repo
-      uses: actions/checkout@v3
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: 8
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: Stamp artifact file name with commit hash
-      run: |
-        artifactName1=$(ls target/*.jar | head -1)
-        commitHash=$(git rev-parse --short "$GITHUB_SHA")
-        artifactName2=$(ls target/*.jar | head -1 | sed "s/.jar/-$commitHash.jar/g")
-        mv $artifactName1 $artifactName2
-    - name: Upload artifact 
-      uses: actions/upload-artifact@v3
-      with:
+      # Step 1: Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Cache Maven Dependencies
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Step 3: Set up JDK 1.8
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+
+      # Step 4: Build with Maven
+      - name: Build with Maven
+        run: mvn clean package -B --file pom.xml
+
+
+      # Step 5: Stamp Artifact File Name with Commit Hash
+      - name: Stamp Artifact File Name
+        run: |
+          # Find the first .jar file in the target directory
+          artifactName1=$(find target -name "*.jar" | head -1)
+          if [ -z "$artifactName1" ]; then
+              echo "Error: No .jar file found in target directory."
+              exit 1
+          fi
+
+          # Get the short commit hash
+          commitHash=$(git rev-parse --short "$GITHUB_SHA")
+
+          # Rename the artifact with the commit hash
+          artifactName2=$(echo $artifactName1 | sed "s/.jar/-$commitHash.jar/g")
+          mv "$artifactName1" "$artifactName2"
+          echo "Artifact renamed to $artifactName2"
+
+      # Step 6: Upload Artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
           name: artifacts
           path: target/*.jar
-        
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    steps:    
-    - name: Checkout this repo
-      uses: actions/checkout@v3
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-    - uses: actions/download-artifact@v3
-      with:
-        name: artifacts
-    - name: Deploy to Sandbox
-      env:
-        USERNAME: "Amir122323"
-        PASSWORD: "Amir122306"
-      run: |
-        artifactName=$(ls *.jar | head -1)
-        mvn deploy -DmuleDeploy -DskipTests \
-         -Dmule.artifact=$artifactName \
-         -Danypoint.username="$USERNAME" \
-         -Danypoint.password="$PASSWORD" 
+    steps:
+      # Step 1: Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Cache Maven Dependencies
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Step 3: Download Artifact
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+
+      # Step 4: Deploy to Sandbox
+      - name: Deploy to Sandbox
+        env:
+          USERNAME: "Amir122323"
+          PASSWORD: "Amir122306"
+        run: |
+          artifactName=$(ls *.jar | head -1)
+          mvn deploy -DmuleDeploy -DskipTests \
+            -Dmule.artifact=$artifactName \
+            -Danypoint.username="$USERNAME" \
+            -Danypoint.password="$PASSWORD"
