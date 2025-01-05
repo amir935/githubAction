@@ -9,7 +9,7 @@
   <artifactId>mule-gitactions</artifactId>
   <version>1.0.0</version>
   <packaging>mule-application</packaging>
-  <name>mule-gitactions</name>
+  <name>mule-gitactions123</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,7 +18,7 @@
     <mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
     <environment>Sandbox</environment>
     <targetName>Cloudhub-US-East-2</targetName>
-    <appName>mule-gitactions</appName>
+    <appName>mule-gitactions123</appName>
     <http.port>8081</http.port>
     <mule.env>dev</mule.env>
   </properties>
