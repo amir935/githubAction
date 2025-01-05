@@ -38,8 +38,4 @@ jobs:
                -Danypoint.envId="f5f5d0be-37e5-4b2c-ac52-e1a46c5b45ee" \
                -DapplicationName="mule-gitactions-$(date +%s)"
 
-<<<<<<< HEAD
           echo "Deployment complete!"
-=======
-          echo "Deployment complete!"
->>>>>>> 70b78b223d70d3224a5263ef393a68241447ab85
