@@ -18,7 +18,7 @@
     <mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
     <environment>Sandbox</environment>
     <targetName>Cloudhub-US-East-2</targetName>
-    <appName>mule-gitactions</appName>
+    <appName>mule-gitactions123</appName>
     <http.port>8081</http.port>
     <mule.env>dev</mule.env>
   </properties>
@@ -47,7 +47,7 @@
             <username>Amir122323</username>
             <password>Amir122306</password>
             <applicationName>${appName}</applicationName>
-            <replicas>2</replicas>
+            <replicas>1</replicas>
             <vCores>0.1</vCores>
             <deploymentSettings>
               <http>

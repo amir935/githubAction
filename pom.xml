@@ -55,6 +55,7 @@
                   <lastMileSecurity>false</lastMileSecurity>
                 </inbound>
               </http>
+              <deploymentModel>Replace</deploymentModel>
             </deploymentSettings>
             <properties>
               <http.port>${http.port}</http.port>
