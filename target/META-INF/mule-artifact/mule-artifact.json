@@ -5,7 +5,7 @@
   "secureProperties": [],
   "supportedJavaVersions": [],
   "redeploymentEnabled": true,
-  "name": "773ec503-c40f-4bb7-b891-34e11e40c432:mule-gitactions:1.0.0-SNAPSHOT",
+  "name": "773ec503-c40f-4bb7-b891-34e11e40c432:mule-gitactions:1.0.0",
   "minMuleVersion": "4.8.0",
   "requiredProduct": "MULE",
   "classLoaderModelLoaderDescriptor": {
