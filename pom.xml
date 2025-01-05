@@ -15,7 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <app.runtime>4.8.1</app.runtime>
-    <mule.maven.plugin.version>4.6.0</mule.maven.plugin.version>
+    <mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
     <environment>Sandbox</environment>
     <targetName>Cloudhub-US-East-2</targetName>
     <appName>mule-gitactions123</appName>
@@ -116,6 +116,12 @@
         <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
+    
+     <pluginRepository>
+    <id>mulesoft-snapshots</id>
+    <url>https://repository.mulesoft.org/snapshots/</url>
+    <layout>default</layout>
+  </pluginRepository>
   </pluginRepositories>
 
 </project>
