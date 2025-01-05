@@ -38,20 +38,16 @@ jobs:
       # Step 5: Stamp Artifact File Name with Commit Hash
       - name: Stamp Artifact File Name
         run: |
-          # Find the first .jar file in the target directory
-          artifactName1=$(find target -name "*.jar" | head -1)
-          if [ -z "$artifactName1" ]; then
-              echo "Error: No .jar file found in target directory."
-              exit 1
-          fi
+         artifactName1=$(find target -name "*.jar" | head -1)
+         if [ -z "$artifactName1" ]; then
+           echo "Error: No .jar file found in target directory."
+           exit 1
+         fi
+         commitHash=$(git rev-parse --short "$GITHUB_SHA")
+         artifactName2=$(echo $artifactName1 | sed "s/.jar/-$commitHash.jar/g")
+         mv "$artifactName1" "$artifactName2"
+         echo "Artifact renamed to $artifactName2"
 
-          # Get the short commit hash
-          commitHash=$(git rev-parse --short "$GITHUB_SHA")
-
-          # Rename the artifact with the commit hash
-          artifactName2=$(echo $artifactName1 | sed "s/.jar/-$commitHash.jar/g")
-          mv "$artifactName1" "$artifactName2"
-          echo "Artifact renamed to $artifactName2"
 
       # Step 6: Upload Artifact
       - name: Upload Artifact
@@ -59,6 +55,7 @@ jobs:
         with:
           name: artifacts
           path: target/*.jar
+  
 
   deploy:
     needs: build
