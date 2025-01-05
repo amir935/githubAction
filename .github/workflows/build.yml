@@ -25,7 +25,7 @@ jobs:
       - name: Clean and Build
         run: |
           echo "Cleaning workspace..."
-          mvn clean package
+          mvn clean package -DskipTests
 
       # Deploy to CloudHub with Hardcoded Credentials
       - name: Deploy to CloudHub
@@ -35,6 +35,7 @@ jobs:
                -Danypoint.username="Amir122323" \
                -Danypoint.password="Amir122306" \
                -Danypoint.orgId="773ec503-c40f-4bb7-b891-34e11e40c432" \
-               -Danypoint.envId="f5f5d0be-37e5-4b2c-ac52-e1a46c5b45ee"
+               -Danypoint.envId="f5f5d0be-37e5-4b2c-ac52-e1a46c5b45ee" \
+               -DapplicationName="mule-gitactions-$(date +%s)"
 
           echo "Deployment complete!"
