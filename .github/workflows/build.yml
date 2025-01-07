@@ -72,13 +72,16 @@ jobs:
           name: artifacts
 
       # Step 4: Deploy to Sandbox
-      - name: Deploy to Sandbox
+      - name: Deploy to CloudHub 2.0
         env:
-          USERNAME: "Amir122323"
-          PASSWORD: "Amir122306"
+             ANYPOINT_USERNAME: "Amir122323"
+             ANYPOINT_PASSWORD: "Amir122306"
         run: |
-          artifactName=$(ls *.jar | head -1)
-          mvn deploy -DmuleDeploy -DskipTests \
-            -Dmule.artifact=$artifactName \
-            -Danypoint.username="$USERNAME" \
-            -Danypoint.password="$PASSWORD"
+  
+             artifactName=$(ls *.jar | head -1)
+             mvn mule:deploy -DskipTests \
+              -DappName="mule-gitactions123" \
+              -Danypoint.username="$ANYPOINT_USERNAME" \
+              -Danypoint.password="$ANYPOINT_PASSWORD" \
+              -Danypoint.environment="Sandbox" \
+              -Dartifact="$artifactName"
