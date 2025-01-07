@@ -10,48 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 8
-
-      - name: Build with Maven
-        run: mvn clean package -B --file pom.xml
-
-      - name: Stamp Artifact File Name
-        run: |
-          artifactName1=$(find target -name "*.jar" | head -1)
-          if [ -z "$artifactName1" ]; then
-            echo "Error: No .jar file found in target directory."
-            exit 1
-          fi
-          commitHash=$(git rev-parse --short "$GITHUB_SHA")
-          artifactName2=$(echo $artifactName1 | sed "s/.jar/-$commitHash.jar/g")
-          mv "$artifactName1" "$artifactName2"
-          echo "Artifact renamed to $artifactName2"
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          path: target/*.jar
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -65,25 +23,64 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 3: Download Artifact
+      # Step 3: Set up Java
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+
+      # Step 4: Build with Maven
+      - name: Build with Maven
+        run: mvn clean package -B --file pom.xml
+
+      # Step 5: Rename Artifact with Commit Hash
+      - name: Stamp Artifact File Name
+        run: |
+          artifactName=$(find target -name "*.jar" | head -1)
+          if [ -z "$artifactName" ]; then
+            echo "Error: No .jar file found in target directory."
+            exit 1
+          fi
+          commitHash=$(git rev-parse --short "$GITHUB_SHA")
+          renamedArtifact=$(echo $artifactName | sed "s/.jar/-$commitHash.jar/g")
+          mv "$artifactName" "$renamedArtifact"
+          echo "Artifact renamed to $renamedArtifact"
+          echo "artifactName=$renamedArtifact" >> $GITHUB_ENV
+
+      # Step 6: Upload Artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: mule-artifact
+          path: target/*.jar
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Download Artifact
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
-          name: artifacts
+          name: mule-artifact
 
-      # Step 4: Deploy to Sandbox
+      # Step 3: Deploy to CloudHub 2.0
       - name: Deploy to CloudHub 2.0
         env:
-             ANYPOINT_USERNAME: "Amir122323"
-             ANYPOINT_PASSWORD: "Amir122306"
+          ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
+          ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
         run: |
-            ls -al
-            artifactName=$(ls *.jar | head -1)
-            echo "Deploying artifact: $artifactName"
-            mvn mule:deploy -DskipTests \
-              -DappName="mule-gitactions123" \
-              -Danypoint.username="$ANYPOINT_USERNAME" \
-              -Danypoint.password="$ANYPOINT_PASSWORD" \
-              -Danypoint.environment="Sandbox" \
-              -Dartifact="$artifactName" \
-              -Dmule.runtime=4.8.1
+          ls -al
+          artifactName=$(ls *.jar | head -1)
+          echo "Deploying artifact: $artifactName"
+          mvn mule:deploy -Dartifact="$artifactName" \
+            -DappName="mule-gitactions123" \
+            -Danypoint.username="$ANYPOINT_USERNAME" \
+            -Danypoint.password="$ANYPOINT_PASSWORD" \
+            -Danypoint.environment="Sandbox" \
+            -Dmule.runtime=4.8.1
