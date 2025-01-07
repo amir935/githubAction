@@ -10,11 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Cache Maven Dependencies
       - name: Cache Maven Dependencies
         uses: actions/cache@v3
         with:
@@ -23,32 +21,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 3: Set up Java
       - name: Set up JDK 1.8
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 8
 
-      # Step 4: Build with Maven
       - name: Build with Maven
         run: mvn clean package -B --file pom.xml
 
-      # Step 5: Rename Artifact with Commit Hash
-      - name: Stamp Artifact File Name
-        run: |
-          artifactName=$(find target -name "*.jar" | head -1)
-          if [ -z "$artifactName" ]; then
-            echo "Error: No .jar file found in target directory."
-            exit 1
-          fi
-          commitHash=$(git rev-parse --short "$GITHUB_SHA")
-          renamedArtifact=$(echo $artifactName | sed "s/.jar/-$commitHash.jar/g")
-          mv "$artifactName" "$renamedArtifact"
-          echo "Artifact renamed to $renamedArtifact"
-          echo "artifactName=$renamedArtifact" >> $GITHUB_ENV
+      - name: Verify Build Output
+        run: ls -al target/
 
-      # Step 6: Upload Artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -59,26 +43,32 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Download Artifact
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
           name: mule-artifact
 
-      # Step 3: Deploy to CloudHub 2.0
+      - name: Debug Artifact Path
+        run: |
+          ls -al
+          artifactName=$(ls target/*.jar | head -1)
+          echo "Resolved artifact: $artifactName"
+
       - name: Deploy to CloudHub 2.0
         env:
           ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
           ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
         run: |
-          ls -al
-          artifactName=$(ls *.jar | head -1)
+          artifactName=$(ls target/*.jar | head -1)
+          if [ -z "$artifactName" ]; then
+            echo "Error: No artifact found to deploy."
+            exit 1
+          fi
           echo "Deploying artifact: $artifactName"
-          mvn mule:deploy -Dartifact="$artifactName" \
+          mvn mule:deploy -X -Dartifact="$artifactName" \
             -DappName="mule-gitactions123" \
             -Danypoint.username="$ANYPOINT_USERNAME" \
             -Danypoint.password="$ANYPOINT_PASSWORD" \
