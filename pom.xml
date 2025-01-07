@@ -55,7 +55,7 @@
                   <lastMileSecurity>false</lastMileSecurity>
                 </inbound>
               </http>
-             
+             <updateStrategy>recreate</updateStrategy>
             </deploymentSettings>
             <properties>
               <http.port>${http.port}</http.port>
