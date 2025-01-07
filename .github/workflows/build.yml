@@ -77,11 +77,13 @@ jobs:
              ANYPOINT_USERNAME: "Amir122323"
              ANYPOINT_PASSWORD: "Amir122306"
         run: |
-  
-             artifactName=$(ls *.jar | head -1)
-             mvn mule:deploy -DskipTests \
+            ls -al
+            artifactName=$(ls *.jar | head -1)
+            echo "Deploying artifact: $artifactName"
+            mvn mule:deploy -DskipTests \
               -DappName="mule-gitactions123" \
               -Danypoint.username="$ANYPOINT_USERNAME" \
               -Danypoint.password="$ANYPOINT_PASSWORD" \
               -Danypoint.environment="Sandbox" \
-              -Dartifact="$artifactName"
+              -Dartifact="$artifactName" \
+              -Dmule.runtime=4.8.1
