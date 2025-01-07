@@ -52,9 +52,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Step 2: Cache Maven Dependencies
       - name: Cache Maven Dependencies
         uses: actions/cache@v3
         with:
@@ -63,28 +65,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      # Step 3: Download Artifact
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
           name: artifacts
 
-      - name: Install Anypoint CLI
-        run: npm install -g anypoint-cli
-
-      - name: Stop Current Application
+      # Step 4: Deploy to Sandbox
+      - name: Deploy to Sandbox
         env:
-          ANYPOINT_CLIENT_ID: "9aae268cfe3d4dce949376c9e754768b"
-          ANYPOINT_CLIENT_SECRET: "0d841e724ADD480C88D2c5262CBdF2Ed"
-        run: |
-          anypoint-cli runtime-mgr cloudhub-application stop my-mule-app --environment sandbox
-
-      - name: Deploy New Application
-        env:
-          ANYPOINT_CLIENT_ID: "9aae268cfe3d4dce949376c9e754768b"
-          ANYPOINT_CLIENT_SECRET: "0d841e724ADD480C88D2c5262CBdF2Ed"
+          USERNAME: "Amir122323"
+          PASSWORD: "Amir122306"
         run: |
           artifactName=$(ls *.jar | head -1)
           mvn deploy -DmuleDeploy -DskipTests \
             -Dmule.artifact=$artifactName \
-            -Danypoint.username="$ANYPOINT_CLIENT_ID" \
-            -Danypoint.password="$ANYPOINT_CLIENT_SECRET"
+            -Danypoint.username="$USERNAME" \
+            -Danypoint.password="$PASSWORD"
