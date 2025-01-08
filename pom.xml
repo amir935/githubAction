@@ -63,7 +63,7 @@
 							<mule.env>${mule.env}</mule.env>
 						</properties>
 					</cloudhub2Deployment>
-					<classifier>---- select project type ----</classifier>
+					<classifier>mule-application</classifier>
 				</configuration>
 			</plugin>
 		</plugins>
