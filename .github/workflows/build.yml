@@ -1,76 +1,61 @@
-name: Build and Deploy to Sandbox
+name: Publish to Exchange & Deploy to CH2.0 
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: 
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+  push: 
 
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+    branches: [ main ]  
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 8
+jobs:          
 
-      - name: Build with Maven
-        run: mvn clean package -B --file pom.xml
+  build: 
 
-      - name: Verify Build Output
-        run: ls -al target/
+    runs-on: ubuntu-latest 
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: mule-artifact
-          path: target/*.jar
+    steps: 
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout this repo 
 
-      - name: Download Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: mule-artifact
+        uses: actions/checkout@v4 
 
-      - name: Debug Artifact Path
-        run: |
-          ls -al
-          artifactName=$(ls target/*.jar | head -1)
-          echo "Resolved artifact: $artifactName"
+      - name: Cache dependencies 
 
-      - name: Deploy to CloudHub 2.0
-        env:
-          ANYPOINT_USERNAME: ${{ secrets.ANYPOINT_USERNAME }}
-          ANYPOINT_PASSWORD: ${{ secrets.ANYPOINT_PASSWORD }}
-        run: |
-          artifactName=$(ls target/*.jar | head -1)
-          if [ -z "$artifactName" ]; then
-            echo "Error: No artifact found to deploy."
-            exit 1
-          fi
-          echo "Deploying artifact: $artifactName"
-          mvn mule:deploy -X -Dartifact="$artifactName" \
-            -DappName="mule-gitactions123" \
-            -Danypoint.username="$ANYPOINT_USERNAME" \
-            -Danypoint.password="$ANYPOINT_PASSWORD" \
-            -Danypoint.environment="Sandbox" \
-            -Dmule.runtime=4.8.1
+        uses: actions/cache@v4 
+
+        with: 
+
+          path: ~/.m2/repository 
+
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }} 
+
+          restore-keys: ${{ runner.os }}-maven- 
+
+      - name: Set up JDK 17 
+
+        uses: actions/setup-java@v4 
+
+        with: 
+
+          distribution: "zulu" 
+
+          java-version: 17 
+
+      - name: Publish to Exchange 
+
+        run: | 
+
+          mvn deploy --settings .maven/settings.xml -DskipMunitTests \ 
+
+          -Dclient.id="${{ secrets.CONNECTED_CLIENT_ID }}" \ 
+
+          -Dclient.secret="${{ secrets.CONNECTED_CLIENT_SECRET }}" 
+
+      - name: Deploy to CloudHub 2.0 
+
+        run: | 
+
+          mvn deploy --settings .maven/settings.xml -DskipMunitTests -DmuleDeploy \ 
+
+          -Dclient.id="${{ secrets.CONNECTED_CLIENT_ID }}" \ 
+
+          -Dclient.secret="${{ secrets.CONNECTED_CLIENT_SECRET }}" 
