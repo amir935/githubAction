@@ -46,7 +46,7 @@
 						<environment>${environment}</environment>
 						<target>${targetName}</target>
 						<muleVersion>${app.runtime}</muleVersion>
-						<username>Amir122323</username>
+						<username>Amir122324</username>
 						<password>Amir122306</password>
 						<applicationName>${appName}</applicationName>
 						<replicas>1</replicas>
