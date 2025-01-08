@@ -32,8 +32,7 @@ jobs:
           echo "mule.client.id=${{ secrets.CONNECTED_CLIENT_ID }}" >> $GITHUB_ENV
           echo "mule.client.secret=${{ secrets.CONNECTED_CLIENT_SECRET }}" >> $GITHUB_ENV
 
-      - name: Debug Maven Settings
-        run: cat .maven/settings.xml
+
 
       - name: Publish to Exchange
         run: |
