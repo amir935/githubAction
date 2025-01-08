@@ -35,7 +35,10 @@ jobs:
       - name: Buid Artifact
         run: |
           mvn clean package
-
       - name: Publish to Exchange
+        run: |
+          mvn deploy
+
+      - name: Deploy to CloudHub
         run: |
           mvn deploy -DmuleDeploy 
