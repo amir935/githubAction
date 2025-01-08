@@ -13,11 +13,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 
 		
 
-<<<<<<< HEAD
+
 		<set-payload value='#["Hello Amir1"]' doc:name="Set Payload" doc:id="7a0d1849-b593-4b40-a059-cb72c76b41c7" />
-=======
+
 		<set-payload value='#["Hello Amir12"]' doc:name="Set Payload" doc:id="7a0d1849-b593-4b40-a059-cb72c76b41c7" />
->>>>>>> 06db84a369605e1a79f915bb263591af76258cad
+
 
 	</flow>
 </mule>
