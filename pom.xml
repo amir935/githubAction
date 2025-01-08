@@ -69,49 +69,7 @@
 		</plugins>
 	</build>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>3.2.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.mule.tools.maven</groupId>
-        <artifactId>mule-maven-plugin</artifactId>
-        <version>${mule.maven.plugin.version}</version>
-        <extensions>true</extensions>
-        <configuration>
-          <organizationId>773ec503-c40f-4bb7-b891-34e11e40c432</organizationId>
-          <environmentId>f5f5d0be-37e5-4b2c-ac52-e1a46c5b45ee</environmentId>
-          <cloudhub2Deployment>
-            <uri>https://anypoint.mulesoft.com</uri>
-            <provider>MC</provider>
-            <environment>${environment}</environment>
-            <target>${targetName}</target>
-            <muleVersion>${app.runtime}</muleVersion>
-            <username>Amir122323</username>
-            <password>Amir122306</password>
-            <applicationName>${appName}</applicationName>
-            <replicas>1</replicas>
-            <vCores>0.1</vCores>
-            <deploymentSettings>
-              <http>
-                <inbound>
-                  <lastMileSecurity>false</lastMileSecurity>
-                </inbound>
-              </http>
-             <updateStrategy>recreate</updateStrategy>
-            </deploymentSettings>
-            <properties>
-              <http.port>${http.port}</http.port>
-              <mule.env>${mule.env}</mule.env>
-            </properties>
-          </cloudhub2Deployment>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+ 
 
 
 	<distributionManagement>
