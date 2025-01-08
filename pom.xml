@@ -127,10 +127,7 @@
 			<url>https://repository.mulesoft.org/snapshots/</url>
 			<layout>default</layout>
 		</pluginRepository>
-		<pluginRepository>
-    <id>mule-public</id>
-    <url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
-  </pluginRepository>
+		
 	</pluginRepositories>
 
 </project>
